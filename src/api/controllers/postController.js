@@ -1,5 +1,7 @@
 const Post = require('../models/postModel');
 
+
+
 exports.list_all_posts = (req, res) => {
     Post.find({}, (error, posts) => {
         if (error) {
@@ -17,7 +19,18 @@ exports.list_all_posts = (req, res) => {
 
 exports.create_a_post = (req, res) => {
     let new_post = new Post(req.body);
-
+    
+    const axios = require('axios').default;
+       axios({
+        method: 'get',
+        url: 'https://loripsum.net/api/plaintext'
+      })
+        .then(function (response) {
+            new_post.content = response.data
+            if(!new_post.content){
+                console.log(new_post.content)
+            }
+        });
     new_post.save((error, post) => {
         if (error) {
             res.status(500);
